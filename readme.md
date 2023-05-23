@@ -1,5 +1,14 @@
 # Workers
 
+## Installation :
+
+Prérequis pour ces exercices :
+
+- minikube : https://kubernetes.io/fr/docs/tasks/tools/install-minikube/
+- kubectl :https://kubernetes.io/docs/tasks/tools/
+
+Vérifier que tout fonctionne correctement : https://kubernetes.io/docs/tutorials/hello-minikube/
+
 ## Présentation
 
 L'objectif du code fourni est de simuler un pattern <a href="https://en.wikipedia.org/wiki/Master/slave_(technology)">master/slave</a>.
