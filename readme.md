@@ -17,7 +17,7 @@ Les workers ne peuvent pas effectuer plusieurs tâches à la fois, ils renvoient
 Il est attendu comme rendu de l'examen des fichiers contenant les commandes lancées (fichier bash (.sh) ou docker-compose) et des Dockerfile. 
 Il est possible d'ajouter un readme.md (ou .txt) pour décrire votre démarche.
 
-Tout dois être consigné via git.
+Tout doit être consigné via git.
 
 ### Les variables d'environment
 
