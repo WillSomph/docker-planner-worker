@@ -42,6 +42,12 @@ let workers = ['http://localhost:8080']
 
 Pour qu'il dispatche les tâches à chaque workers.
 
+Il existe aussi un script `connect.sh` qui peut être utilisé pour ajouter des workers en localhost.
+```sh
+./connect.sh 8080 8070
+```
+Il ajoutera des workers `'http://localhost:8080'` et `'http://localhost:8070'`.
+
 On commit!
 
 ### Exercice 3: Spécialisation des workers
