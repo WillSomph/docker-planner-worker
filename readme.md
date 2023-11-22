@@ -83,34 +83,53 @@ build an image (You have to run it in folder with a Dockerfile)
 docker build -t imageName .
 ```
 
-run an image
-
-```sh
-docker run imageName -d
-```
-
-stop docker instance
-
-```sh
-docker stop instanceID
-```
-
-get log of an instance
-
-```sh
-docker exec -it instanceID sh
-```
-
 list of all docker images on your device
 
 ```sh
 docker images
 ```
 
+run an image
+
+```sh
+docker run -dit --name containerName --network networkName imageName  
+```
+
+
+stop docker container
+
+```sh
+docker stop containerName
+```
+
+run a terminal inside your container
+
+```sh
+docker exec -it containerName sh
+```
+
+get logs of a container
+
+```sh
+docker logs containerName 
+```
+
 list of all instances running on your device
 
 ```sh
 docker ps
+```
+
+list of all networks on your device
+
+```sh
+docker network ls
+```
+
+put a container in a network
+
+```sh
+docker network connect networkName containerName
 ```
 
 build and run a docker-compose stack (You have to run it in folder with a docker-compose.yml)
