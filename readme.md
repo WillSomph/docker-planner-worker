@@ -14,7 +14,8 @@ On a donc 2 serveurs :
 Pour éviter de complexifier le code on va seulement faire des multiplications et des additions, le worker prend artificiellement du temps pour simuler un temps de travail.
 Les workers ne peuvent pas effectuer plusieurs tâches à la fois, ils renvoient une erreur 403 si on leur donne une nouvelle tâche alors que leur tâche en cours n'est pas fini.
 
-Il est attendu comme rendu de l'examen des fichiers contenant les commandes lancées (fichier bash (.sh) ou docker-compose) et des Dockerfile.
+Il est attendu comme rendu de l'examen des fichiers contenant les commandes lancées (fichier bash (.sh) ou docker-compose) et des Dockerfile. 
+Il est possible d'ajouter un readme.md (ou .txt) pour décrire votre démarche.
 
 Tout dois être consigné via git.
 
