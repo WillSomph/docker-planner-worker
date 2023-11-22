@@ -14,6 +14,10 @@ On a donc 2 serveurs :
 Pour éviter de complexifier le code on va seulement faire des multiplications et des additions, le worker prend artificiellement du temps pour simuler un temps de travail.
 Les workers ne peuvent pas effectuer plusieurs tâches à la fois, ils renvoient une erreur 403 si on leur donne une nouvelle tâche alors que leur tâche en cours n'est pas fini.
 
+Il est attendu comme rendu de l'examen des fichiers contenant les commandes lancées (fichier bash (.sh) ou docker-compose) et des Dockerfile.
+
+Tout dois être consigné via git.
+
 ### Les variables d'environment
 
 Pour configurer plus facilement les serveurs il est possible d'utiliser les variables d'environment. (voir directement dans les readme des deux projets)
@@ -71,7 +75,7 @@ Créez une configuration qui exécute une centaine de tâches dispatchées parmi
 
 On commit!
 
-Pensez à m'envoyer un lien vers votre git sur slack ou par mail: arthur.escriou@gmail.com
+Pensez à m'envoyer un lien vers votre git par mail: arthur.escriou@gmail.com
 
 ### Annexe
 
