@@ -13,9 +13,15 @@ const generateTasks = (i) =>
   new Array(i).fill(1).map((_) => ({ type: taskType(), args: args() }))
 
 let workers = []
-for (let i = 1; i <= 10; i++) {
-  const workerType = Math.random() < 0.5 ? 'mult' : 'add';
+let genWorkers = workers.filter((worker) => worker.type === undefined);
+let multWorkers = workers.filter((worker) => worker.type === 'mult');
+let addWorkers = workers.filter((worker) => worker.type === 'add');
 
+for (let i = 1; i <= 10; i++) {
+  const randomValue = Math.random();
+  const workerType = randomValue < 0.33 ? 'mult' : (randomValue < 0.66 ? 'add' : 'gen');
+  console.log(workerType);
+  
   const worker = {
     url: "http://docker-planner-worker-worker-"+ i + ":8080",
     id: i.toString(),
@@ -34,7 +40,7 @@ app.use(
 )
 
 app.get('/', (req, res) => {
-  res.send(JSON.stringify(workers))
+  res.send(JSON.stringify([...genWorkers, ...multWorkers, ...addWorkers]))
 })
 
 app.post('/register', (req, res) => {
@@ -52,7 +58,15 @@ const wait = (mili) =>
 
 const sendTask = async (worker, task) => {
   console.log(`=> ${worker.url}/${task.type}`, task)
-  workers = workers.filter((w) => w.id !== worker.id)
+  if (worker.type === undefined){
+    genWorkers = genWorkers.filter((w) => w.id !== worker.id)
+  }
+  if (worker.type === 'mult'){
+    multWorkers = multWorkers.filter((w) => w.id !== worker.id)
+  }
+  if (worker.type === 'add'){
+    addWorkers = addWorkers.filter((w) => w.id !== worker.id)
+  }
   tasks = tasks.filter((t) => t !== task)
   const request = fetch(`${worker.url}/${task.type}`, {
     method: 'POST',
@@ -63,7 +77,15 @@ const sendTask = async (worker, task) => {
     body: JSON.stringify(task.args),
   })
     .then((res) => {
-      workers = [...workers, worker]
+      if (worker.type === undefined){
+        genWorkers = [...genWorkers, worker]
+      }
+      if (worker.type === 'mult'){
+        multWorkers = [...multWorkers, worker]
+      }
+      if (worker.type === 'add'){
+        addWorkers = [...addWorkers, worker]
+      }
       return res.json()
     })
     .then((res) => {
@@ -84,7 +106,21 @@ const main = async () => {
   console.log(tasks)
   while (taskToDo > 0) {
     await wait(100)
-    if (workers.length === 0 || tasks.length === 0) continue
+    if (genWorkers.length === 0 || multWorkers.length === 0 || addWorkers.length === 0 || tasks.length === 0) continue
+    if(tasks[0].type === undefined)
+    {
+      genWorkers.length === 0 ? console.log("No gen worker available") : sendTask(genWorkers[0], tasks[0])
+      continue
+    }
+    if(tasks[0].type === 'mult')
+    {
+      multWorkers.length === 0 ? console.log("No mult worker available") : sendTask(multWorkers[0], tasks[0])
+      continue
+    }
+    if(tasks[0].type === 'add' )
+    {
+      addWorkers.length === 0 ? console.log("No add worker available") : sendTask(addWorkers[0], tasks[0])
+    }
     sendTask(workers[0], tasks[0])
   }
   console.log('end of tasks')
