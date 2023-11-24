@@ -13,8 +13,8 @@ const generateTasks = (i) =>
   new Array(i).fill(1).map((_) => ({ type: taskType(), args: args() }))
 
 let workers = [
-    // { url: 'http://127.0.0.1:8080', id: '' }
-    { url: 'http://worker:8080', id: '' }
+  { url: 'http://worker1:8080', id: '1' },
+  { url: 'http://worker2:8070', id: '2' }
 ]
 
 const app = express()
