@@ -1,0 +1,25 @@
+version: '3'
+services:
+  planner:
+    build:
+      context: .
+      dockerfile: planner/Dockerfile
+    depends_on:
+      - worker
+    networks:
+      - mynetwork
+    ports:
+      - "3000:3000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    networks:
+      - mynetwork
+    deploy:
+      replicas: 10
+
+networks:
+  mynetwork:
+    driver: bridge

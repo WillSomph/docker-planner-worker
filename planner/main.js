@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const express = require('express')
 
 const port = process.env.PORT || 3000
-const nbTasks = parseInt(process.env.TASKS) || 4
+const nbTasks = parseInt(process.env.TASKS) || 20
 
 const randInt = (min, max) => Math.floor(Math.random() * (max - min)) + min
 const taskType = () => (randInt(0, 2) ? 'mult' : 'add')
@@ -12,12 +12,18 @@ const args = () => ({ a: randInt(0, 40), b: randInt(0, 40) })
 const generateTasks = (i) =>
   new Array(i).fill(1).map((_) => ({ type: taskType(), args: args() }))
 
-let workers = [
-  { url: 'http://worker1:8080', id: '1', type: 'mult' },
-  { url: 'http://worker2:8070', id: '2', type: 'add' }
-]
-let multWorkers = workers.filter((worker) => worker.type === 'mult');
-let addWorkers = workers.filter((worker) => worker.type === 'add');
+let workers = []
+for (let i = 1; i <= 10; i++) {
+  const workerType = Math.random() < 0.5 ? 'mult' : 'add';
+
+  const worker = {
+    url: "http://docker-planner-worker-worker-"+ i + ":8080",
+    id: i.toString(),
+    type: workerType,
+  };
+  workers.push(worker); 
+}
+
 
 const app = express()
 app.use(express.json())
@@ -46,13 +52,7 @@ const wait = (mili) =>
 
 const sendTask = async (worker, task) => {
   console.log(`=> ${worker.url}/${task.type}`, task)
-  // workers = workers.filter((w) => w.id !== worker.id)
-  if (worker.type === 'mult') {
-    multWorkers = multWorkers.filter((w) => w.id !== worker.id)
-  }
-  if (worker.type === 'add') {
-    addWorkers = addWorkers.filter((w) => w.id !== worker.id)
-  }
+  workers = workers.filter((w) => w.id !== worker.id)
   tasks = tasks.filter((t) => t !== task)
   const request = fetch(`${worker.url}/${task.type}`, {
     method: 'POST',
@@ -63,14 +63,8 @@ const sendTask = async (worker, task) => {
     body: JSON.stringify(task.args),
   })
     .then((res) => {
-      //  workers = [...workers, worker]
-      if (worker.type === 'mult') {
-        multWorkers = [...multWorkers, worker]
-      }
-
-      if (worker.type === 'add') {
-        addWorkers = [...addWorkers, worker]
-      } return res.json()
+      workers = [...workers, worker]
+      return res.json()
     })
     .then((res) => {
       taskToDo -= 1
@@ -90,18 +84,8 @@ const main = async () => {
   console.log(tasks)
   while (taskToDo > 0) {
     await wait(100)
-    // if (workers.length === 0 || tasks.length === 0) continue
-    // sendTask(workers[0], tasks[0])
-    // if (workers.length === 0 || tasks.length === 0) continue
-    // sendTask(workers[0], tasks[0])
-    if (multWorkers.length === 0 || addWorkers.length === 0 || tasks.length === 0) continue
-    if (tasks[0].type === 'mult') {
-      multWorkers.length === 0 ? console.log("No worker available") : sendTask(multWorkers[0], tasks[0])
-      continue
-    }
-    if (tasks[0].type === 'add') {
-      addWorkers.length === 0 ? console.log("No worker available") : sendTask(addWorkers[0], tasks[0])
-    }
+    if (workers.length === 0 || tasks.length === 0) continue
+    sendTask(workers[0], tasks[0])
   }
   console.log('end of tasks')
   server.close()
